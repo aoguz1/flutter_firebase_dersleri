@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "354725336972",
+    "firebase_url": "https://flutterfirebasedersleri.firebaseio.com",
+    "project_id": "flutterfirebasedersleri",
+    "storage_bucket": "flutterfirebasedersleri.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:354725336972:android:ab981e49fde89f51",
+        "android_client_info": {
+          "package_name": "emrealtunbilek.com.flutterfirebasedersleri"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "354725336972-v2hgjr660s7qc9lnv65rtrqdh8t45fau.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARbTM0j-5D4g9KV7Na0K3OtGjaOARwOnY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

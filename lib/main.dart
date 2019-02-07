@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_firebase_dersleri/login_islemleri.dart';
 
 void main() => runApp(MyApp());
 
@@ -10,7 +12,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Firebase Demo'),
+      home: LoginIslemleri(),
     );
   }
 }
