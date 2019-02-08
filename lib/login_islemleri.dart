@@ -10,6 +10,22 @@ class _LoginIslemleriState extends State<LoginIslemleri> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String mesaj = "";
 
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _auth.onAuthStateChanged.listen((user){
+      setState(() {
+        if(user != null){
+          mesaj += "\nListener tetiklendi kullanıcı oturum açtı";
+        }else {
+          mesaj += "\nListener tetiklendi kullanıcı oturumu kapattı";
+        }
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,6 +60,34 @@ class _LoginIslemleriState extends State<LoginIslemleri> {
               ),
               color: Colors.red,
               onPressed: _cikisyap,
+            ),
+
+            RaisedButton(
+              child: Text(
+                "Şifremi Unuttum",
+                style: TextStyle(color: Colors.white),
+              ),
+              color: Colors.purple,
+              onPressed: _sifremiUnuttum,
+            ),
+
+            RaisedButton(
+              child: Text(
+                "Şifremi Güncelle",
+                style: TextStyle(color: Colors.white),
+              ),
+              color: Colors.pink,
+              onPressed: _sifremiGuncelle,
+            ),
+
+
+            RaisedButton(
+              child: Text(
+                "Email Güncelle",
+                style: TextStyle(color: Colors.white),
+              ),
+              color: Colors.blueGrey,
+              onPressed: _emailGuncelle,
             ),
 
 
@@ -93,10 +137,10 @@ class _LoginIslemleriState extends State<LoginIslemleri> {
     _auth.signInWithEmailAndPassword(email: mail, password: sifre).then((oturumAcmisKullanici){
 
       if(oturumAcmisKullanici.isEmailVerified){
-        mesaj = "Email onaylı kullanıcı yönlendirme yapabilirsin";
+        mesaj += "\nEmail onaylı kullanıcı yönlendirme yapabilirsin";
       }else{
 
-        mesaj = "Emailize mail attık lütfen onaylayın";
+        mesaj += "\nEmailize mail attık lütfen onaylayın";
         _auth.signOut();
       }
       setState(() {
@@ -107,7 +151,7 @@ class _LoginIslemleriState extends State<LoginIslemleri> {
       debugPrint(hata.toString());
 
       setState(() {
-        mesaj = "Email/Sifre hatalı";
+        mesaj += "\nEmail/Sifre hatalı";
       });
 
     });
@@ -121,20 +165,117 @@ class _LoginIslemleriState extends State<LoginIslemleri> {
       _auth.signOut().then((data){
 
         setState(() {
-          mesaj = "Kullanıcı çıkış yaptı";
+          mesaj += "\nKullanıcı çıkış yaptı";
         });
       }).catchError((hata){
         setState(() {
-          mesaj = "Çıkış yaparken hata oluştu $hata";
+          mesaj += "\nÇıkış yaparken hata oluştu $hata";
         });
       });
     }else{
      setState(() {
-       mesaj = "Oturum açmış kullanıcı yok";
+       mesaj += "\nOturum açmış kullanıcı yok";
      });
     }
 
 
+
+  }
+
+  void _sifremiUnuttum() {
+    String mail = "emrealtunbilek@gmail.com";
+    _auth.sendPasswordResetEmail(email: mail).then((v){
+      setState(() {
+
+        mesaj += "\nSıfırlama maili gönderildi";
+      });
+    }).catchError((hata){
+
+      setState(() {
+
+        mesaj += "\nŞifremi unuttum mailinde hata $hata";
+      });
+    });
+
+  }
+
+  void _sifremiGuncelle() async {
+
+
+
+    _auth.currentUser().then((user){
+
+      if(user != null){
+
+        user.updatePassword("234567").then((a){
+          setState(() {
+
+            mesaj += "\nŞifre güncellendi";
+
+          });
+        }).catchError((hata){
+          setState(() {
+
+            mesaj += "\nŞifre güncellenirken hata olustur $hata";
+
+          });
+
+        });
+      }else{
+
+        setState(() {
+
+          mesaj += "\nŞifre güncellemek için önce oturum açın";
+
+        });
+      }
+
+    }).catchError((hata){
+      setState(() {
+
+        mesaj += "\nKullanıcı getirilirken cıkan hata : $hata";
+
+      });
+    });
+
+  }
+
+  void _emailGuncelle() {
+
+    _auth.currentUser().then((user){
+
+      if(user != null){
+
+        user.updateEmail("emre@emre.com").then((a){
+          setState(() {
+
+            mesaj += "\Email güncellendi";
+
+          });
+        }).catchError((hata){
+          setState(() {
+
+            mesaj += "\Email güncellenirken hata olustur $hata";
+
+          });
+
+        });
+      }else{
+
+        setState(() {
+
+          mesaj += "\Email güncellemek için önce oturum açın";
+
+        });
+      }
+
+    }).catchError((hata){
+      setState(() {
+
+        mesaj += "\nKullanıcı getirilirken cıkan hata : $hata";
+
+      });
+    });
 
   }
 }
