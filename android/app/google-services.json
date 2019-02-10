@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "354725336972-9vlfmaumlijjir0sik7t5rbh849chn0c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "emrealtunbilek.com.flutterfirebasedersleri",
+            "certificate_hash": "6efba55a11e19f7d66b1ee812648bb15704cb609"
+          }
+        },
+        {
           "client_id": "354725336972-v2hgjr660s7qc9lnv65rtrqdh8t45fau.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "354725336972-v2hgjr660s7qc9lnv65rtrqdh8t45fau.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

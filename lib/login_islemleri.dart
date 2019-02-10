@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginIslemleri extends StatefulWidget {
   @override
@@ -8,6 +9,8 @@ class LoginIslemleri extends StatefulWidget {
 
 class _LoginIslemleriState extends State<LoginIslemleri> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleAuth = GoogleSignIn();
+
   String mesaj = "";
 
 
@@ -90,6 +93,15 @@ class _LoginIslemleriState extends State<LoginIslemleri> {
               onPressed: _emailGuncelle,
             ),
 
+            RaisedButton(
+              child: Text(
+                "Google ile Giriş",
+                style: TextStyle(color: Colors.white),
+              ),
+              color: Colors.brown,
+              onPressed: _googleGirisi,
+            ),
+
 
             Text(mesaj),
           ],
@@ -99,7 +111,7 @@ class _LoginIslemleriState extends State<LoginIslemleri> {
   }
 
   void _emailveSifreileUserOlustur() async {
-    String mail = "emrealtunbilek@gmail.com";
+    String mail = "emrealtunbilek06@gmail.com";
     String sifre = "123456";
     var firebaseUser = await _auth
         .createUserWithEmailAndPassword(
@@ -131,7 +143,7 @@ class _LoginIslemleriState extends State<LoginIslemleri> {
   }
 
   void _emailveSifreileGirisYap() {
-    String mail = "emrealtunbilek@gmail.com";
+    String mail = "emrealtunbilek06@gmail.com";
     String sifre = "123456";
 
     _auth.signInWithEmailAndPassword(email: mail, password: sifre).then((oturumAcmisKullanici){
@@ -163,6 +175,9 @@ class _LoginIslemleriState extends State<LoginIslemleri> {
 
     if(await _auth.currentUser() != null){
       _auth.signOut().then((data){
+
+
+        _googleAuth.signOut();
 
         setState(() {
           mesaj += "\nKullanıcı çıkış yaptı";
@@ -276,6 +291,48 @@ class _LoginIslemleriState extends State<LoginIslemleri> {
 
       });
     });
+
+  }
+
+  void _googleGirisi() {
+
+    _googleAuth.signIn().then((sonuc){
+
+      sonuc.authentication.then((googleKeys){
+
+        AuthCredential credential=GoogleAuthProvider.getCredential(idToken: googleKeys.idToken, accessToken: googleKeys.accessToken);
+        _auth.signInWithCredential(credential).then((user){
+
+          setState(() {
+            mesaj += "\nGmail ile giriş yapıldı\n User id:${user.uid}\nMail : ${user.email}";
+          });
+
+        }).catchError((hata){
+
+          setState(() {
+            mesaj += "\nFirebase ve google kullanıcı hatası $hata";
+          });
+
+        });
+
+
+      }).catchError((hata){
+
+        setState(() {
+          mesaj += "\nGoogle authentication hatası $hata";
+        });
+
+      });
+
+
+    }).catchError((hata){
+
+      setState(() {
+        mesaj += "\nGoogle Auth signin hatası $hata";
+      });
+
+    });
+
 
   }
 }
