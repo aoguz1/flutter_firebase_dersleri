@@ -103,6 +103,17 @@ class _LoginIslemleriState extends State<LoginIslemleri> {
             ),
 
 
+            RaisedButton(
+              child: Text(
+                "TelNo ile Giriş",
+                style: TextStyle(color: Colors.white),
+              ),
+              color: Colors.lightBlue,
+              onPressed: _telNoGiris,
+            ),
+
+
+
             Text(mesaj),
           ],
         ),
@@ -333,6 +344,53 @@ class _LoginIslemleriState extends State<LoginIslemleri> {
 
     });
 
+
+  }
+
+  void _telNoGiris() {
+
+    String mail = "emrealtunbilek06@gmail.com";
+    String sifre = "123456";
+
+    _auth.verifyPhoneNumber(phoneNumber: "+905555555555",
+        timeout: Duration(seconds: 60),
+        verificationCompleted: (FirebaseUser user){
+
+          user.updateEmail(mail).then((aaa){
+
+            user.updatePassword(sifre).then((aaa){
+              debugPrint("Verification tamamlandı user: $user");
+            });
+
+          });
+
+
+
+        },
+        verificationFailed: (AuthException exception){
+          debugPrint("Authexception ${exception.message}");
+        },
+        codeSent: (String verificationId, [int forceResendingToken]){
+          debugPrint("verification id: $verificationId");
+          debugPrint("forceresending token: $forceResendingToken");
+
+          AuthCredential credential=PhoneAuthProvider.getCredential(verificationId: verificationId, smsCode: "123456");
+          _auth.signInWithCredential(credential).then((user){
+
+            user.updateEmail(mail).then((aaa){
+
+              user.updatePassword(sifre).then((aaa){
+                debugPrint("Verification tamamlandı user: $user");
+              });
+
+            });
+          });
+
+
+        },
+        codeAutoRetrievalTimeout: (String verificationID){
+          debugPrint("time out verification id: $verificationID");
+        });
 
   }
 }
