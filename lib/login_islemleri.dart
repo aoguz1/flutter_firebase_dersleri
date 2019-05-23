@@ -354,17 +354,17 @@ class _LoginIslemleriState extends State<LoginIslemleri> {
 
     _auth.verifyPhoneNumber(phoneNumber: "+905555555555",
         timeout: Duration(seconds: 60),
-        verificationCompleted: (FirebaseUser user){
+        verificationCompleted: (AuthCredential credential){
 
-          user.updateEmail(mail).then((aaa){
+          _auth.signInWithCredential(credential).then((user){
+            user.updateEmail(mail).then((aaa){
 
-            user.updatePassword(sifre).then((aaa){
-              debugPrint("Verification tamamlandı user: $user");
+              user.updatePassword(sifre).then((aaa){
+                debugPrint("Verification tamamlandı user: $user");
+              });
+
             });
-
           });
-
-
 
         },
         verificationFailed: (AuthException exception){
