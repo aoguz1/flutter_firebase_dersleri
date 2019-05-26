@@ -38,6 +38,11 @@ class _FirestoreIslemleriState extends State<FirestoreIslemleri> {
               color: Colors.pink,
               onPressed: _veriOku,
             ),
+            RaisedButton(
+              child: Text("Veri Sorgula"),
+              color: Colors.brown,
+              onPressed: _veriSorgula,
+            ),
           ],
         ),
       ),
@@ -162,6 +167,60 @@ class _FirestoreIslemleriState extends State<FirestoreIslemleri> {
       _firestore.collection("users").snapshots().listen((snap) {
         debugPrint(snap.documents.length.toString());
       });
+    });
+  }
+
+  void _veriSorgula() async {
+    var dokumanlar = await _firestore
+        .collection("users")
+        .where("email", isEqualTo: 'ayse@ayse.com')
+        .getDocuments();
+    for (var dokuman in dokumanlar.documents) {
+      debugPrint(dokuman.data.toString());
+    }
+
+    var limitliGetir =
+        await _firestore.collection("users").limit(3).getDocuments();
+    for (var dokuman in limitliGetir.documents) {
+      debugPrint("Limitli getirenler" + dokuman.data.toString());
+    }
+
+    var diziSorgula = await _firestore
+        .collection("users")
+        .where("dizi", arrayContains: 'breaking bad')
+        .getDocuments();
+    for (var dokuman in diziSorgula.documents) {
+      debugPrint("Dizi şartı ile getirenler" + dokuman.data.toString());
+    }
+
+    var stringSorgula = await _firestore
+        .collection("users")
+        .orderBy("email")
+        .startAt(['emre']).endAt(['emre' + '\uf8ff']).getDocuments();
+    for (var dokuman in stringSorgula.documents) {
+      debugPrint("String sorgula ile getirenler" + dokuman.data.toString());
+    }
+
+    _firestore
+        .collection("users")
+        .document("emre_altunbilek")
+        .get()
+        .then((docSnap) {
+      debugPrint("emrenin verileri" + docSnap.data.toString());
+
+      _firestore
+          .collection("users")
+          .orderBy('begeni')
+          .endAt([docSnap.data['begeni']])
+          .getDocuments()
+          .then((querySnap) {
+            if (querySnap.documents.length > 0) {
+              for (var bb in querySnap.documents) {
+                debugPrint("emrenin begenisinden fazla olan user:" +
+                    bb.data.toString());
+              }
+            }
+          });
     });
   }
 }
