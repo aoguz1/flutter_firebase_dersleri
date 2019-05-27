@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class FirestoreIslemleri extends StatefulWidget {
   @override
@@ -8,6 +12,12 @@ class FirestoreIslemleri extends StatefulWidget {
 
 class _FirestoreIslemleriState extends State<FirestoreIslemleri> {
   final Firestore _firestore = Firestore.instance;
+  File _secilenResim;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +53,21 @@ class _FirestoreIslemleriState extends State<FirestoreIslemleri> {
               color: Colors.brown,
               onPressed: _veriSorgula,
             ),
+            RaisedButton(
+              child: Text("Galeriden Storagea Resim"),
+              color: Colors.orange,
+              onPressed: _galeriResimUpload,
+            ),
+            RaisedButton(
+              child: Text("Kameradan Storagea Resim"),
+              color: Colors.purple,
+              onPressed: _kameraResimUpload,
+            ),
+            Expanded(
+              child: _secilenResim == null
+                  ? Text("Resim YOK")
+                  : Image.file(_secilenResim),
+            )
           ],
         ),
       ),
@@ -222,5 +247,39 @@ class _FirestoreIslemleriState extends State<FirestoreIslemleri> {
             }
           });
     });
+  }
+
+  void _galeriResimUpload() async {
+    var resim = await ImagePicker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      _secilenResim = resim;
+    });
+
+    StorageReference ref = FirebaseStorage.instance
+        .ref()
+        .child("user")
+        .child("emre")
+        .child("profil.png");
+    StorageUploadTask uploadTask = ref.putFile(_secilenResim);
+
+    var url = await (await uploadTask.onComplete).ref.getDownloadURL();
+    debugPrint("upload edilen resmin urlsi : " + url);
+  }
+
+  void _kameraResimUpload() async {
+    var resim = await ImagePicker.pickImage(source: ImageSource.camera);
+    setState(() {
+      _secilenResim = resim;
+    });
+
+    StorageReference ref = FirebaseStorage.instance
+        .ref()
+        .child("user")
+        .child("hasan")
+        .child("profil.png");
+    StorageUploadTask uploadTask = ref.putFile(_secilenResim);
+
+    var url = await (await uploadTask.onComplete).ref.getDownloadURL();
+    debugPrint("upload edilen resmin urlsi : " + url);
   }
 }
