@@ -9,7 +9,7 @@ class LoginIslemleri extends StatefulWidget {
 
 class _LoginIslemleriState extends State<LoginIslemleri> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleAuth = GoogleSignIn();
+  final GoogleSignIn _googleAuth = GoogleSignIn(scopes: ['email']);
 
   String mesaj = "";
 
@@ -122,15 +122,15 @@ class _LoginIslemleriState extends State<LoginIslemleri> {
   }
 
   void _emailveSifreileUserOlustur() async {
-    String mail = "emrealtunbilek06@gmail.com";
+    String mail = "emrealtunbilek069999@gmail.com";
     String sifre = "123456";
-    var firebaseUser = await _auth
+    var authResult = await _auth
         .createUserWithEmailAndPassword(
           email: mail,
           password: sifre,
         )
         .catchError((e) => debugPrint("Hata :" + e.toString()));
-
+    var firebaseUser = authResult.user;
     if (firebaseUser != null) {
       firebaseUser
           .sendEmailVerification()
@@ -154,11 +154,12 @@ class _LoginIslemleriState extends State<LoginIslemleri> {
   }
 
   void _emailveSifreileGirisYap() {
-    String mail = "emrealtunbilek06@gmail.com";
+    String mail = "emrealtunbilek069999@gmail.com";
     String sifre = "123456";
 
-    _auth.signInWithEmailAndPassword(email: mail, password: sifre).then((oturumAcmisKullanici){
+    _auth.signInWithEmailAndPassword(email: mail, password: sifre).then((oturumAcmisKullaniciAuthResult){
 
+      var oturumAcmisKullanici= oturumAcmisKullaniciAuthResult.user;
       if(oturumAcmisKullanici.isEmailVerified){
         mesaj += "\nEmail onaylı kullanıcı yönlendirme yapabilirsin";
       }else{
@@ -312,8 +313,8 @@ class _LoginIslemleriState extends State<LoginIslemleri> {
       sonuc.authentication.then((googleKeys){
 
         AuthCredential credential=GoogleAuthProvider.getCredential(idToken: googleKeys.idToken, accessToken: googleKeys.accessToken);
-        _auth.signInWithCredential(credential).then((user){
-
+        _auth.signInWithCredential(credential).then((userAuthResult){
+          var user= userAuthResult.user;
           setState(() {
             mesaj += "\nGmail ile giriş yapıldı\n User id:${user.uid}\nMail : ${user.email}";
           });
@@ -349,14 +350,16 @@ class _LoginIslemleriState extends State<LoginIslemleri> {
 
   void _telNoGiris() {
 
-    String mail = "emrealtunbilek06@gmail.com";
+    String mail = "emrealtunbilek06999@gmail.com";
     String sifre = "123456";
 
     _auth.verifyPhoneNumber(phoneNumber: "+905555555555",
         timeout: Duration(seconds: 60),
         verificationCompleted: (AuthCredential credential){
 
-          _auth.signInWithCredential(credential).then((user){
+          _auth.signInWithCredential(credential).then((userAuthResult){
+
+            var user=userAuthResult.user;
             user.updateEmail(mail).then((aaa){
 
               user.updatePassword(sifre).then((aaa){
@@ -375,7 +378,9 @@ class _LoginIslemleriState extends State<LoginIslemleri> {
           debugPrint("forceresending token: $forceResendingToken");
 
           AuthCredential credential=PhoneAuthProvider.getCredential(verificationId: verificationId, smsCode: "123456");
-          _auth.signInWithCredential(credential).then((user){
+          _auth.signInWithCredential(credential).then((userAuthResult){
+
+            var user = userAuthResult.user;
 
             user.updateEmail(mail).then((aaa){
 
